@@ -20,6 +20,10 @@ function app(frame_data, gt_data, rt_data) {
       min: 0,
       max: 45,
     },
+    crosshair: {
+      mode: "x",
+      color: "#EAE8FF",
+    },
     grid: {
       backgroundColor: "#222",
       aboveData: false,
