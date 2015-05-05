@@ -1,23 +1,21 @@
-%html
-  %head
-    %meta{charset: "utf-8"}/
-    %title
-      = @filename
-    %script{src: "//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"}
-    %script{src: "//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"}
-    %script{src: "//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"}
-    %script{src: "/js/chart.js"}
-  %body
-    %h1
-      = @filename
-    #choices
+%h1
+  = @filename
+  %small
+    %a{href: "/"} Back to Index
+%form#choices.form-inline{action: "javascript:void(0);"}
+  .checkbox
+    %label
       %input{type: "checkbox", name: "frame", checked: "checked", id: "check_frame"}
-      %label Frame
+      Frame
+  .checkbox
+    %label
       %input{type: "checkbox", name: "gt", checked: "checked", id: "check_gt"}
-      %label Game Thread
+      Game Thread
+  .checkbox
+    %label
       %input{type: "checkbox", name: "rt", checked: "checked", id: "check_rt"}
-      %label Render Thread
-      %input{type: "submit", value: "Replot", id: "replot"}
-    #chart{style: "width:100%; height:450px; margin: 20 auto;"}
-    :javascript
-      app(#{@frame_data}, #{@gt_data}, #{@rt_data});
+      Render Thread
+  %button{type: "submit", id: "replot"} Replot
+#chart{style: "width:100%; height:450px; margin: 20 auto;"}
+:javascript
+  app(#{@frame_data}, #{@gt_data}, #{@rt_data});

@@ -9,7 +9,7 @@ get "/upload/?" do
 end
 
 post "/upload/?" do
-  if File.extname params['csvfile'][:filename] != ".csv"
+  if File.extname(params['csvfile'][:filename]) != ".csv"
     halt 401
   end
   File.open('uploads/' + params['csvfile'][:filename], "w") do |f|
@@ -21,6 +21,7 @@ end
 
 get "/" do
   @files = Dir.entries("uploads").select { |x| !x.start_with? '.' }
+  @title = "Index"
   haml :files
 end
 
@@ -37,5 +38,6 @@ get "/chart/:filename/?" do
     end
   end
   @filename = File.basename(params[:filename], File.extname(params[:filename]))
+  @title = @filename
   haml :chart
 end

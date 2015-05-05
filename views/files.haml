@@ -1,14 +1,9 @@
-%html
-  %head
-    %meta{charset: "utf-8"}/
-    %title
-      Chart List
-  %body
-    %h1
-      Chart List
+%h1
+  Chart List
+  %small
     %a{href: "/upload"} Upload CSV
-    %ul
-      - @files.each do |fn|
-        %li
-          %a{href: "/chart/#{fn}"}
-            = fn
+%ul
+  - @files.each do |fn|
+    %li
+      %a{href: "/chart/#{fn}"}
+        = fn
