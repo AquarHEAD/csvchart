@@ -41,3 +41,10 @@ get "/chart/:filename/?" do
   @title = @filename
   haml :chart
 end
+
+get "/remove/:filename/?" do
+  if File.exist? "uploads/#{params[:filename]}"
+    File.delete "uploads/#{params[:filename]}"
+  end
+  redirect "/"
+end
