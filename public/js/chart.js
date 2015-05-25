@@ -85,11 +85,15 @@ function app(frame_data, gt_data, rt_data) {
       chart = $("#chart");
       plot = $.plot("#chart", data, chart_options);
 
-      pos60 = plot.pointOffset({ x: 0.5, y: 1000/60});
-      chart.append('<div style="position:absolute;left:' + (pos60.left + 4) + 'px;top:' + (pos60.top-15) + 'px;color:#0F0;font-size:smaller">60 FPS</div>');
+      function add_fps_label() {
+        pos60 = plot.pointOffset({ x: 0.5, y: 1000/60});
+        chart.append('<div style="position:absolute;left:' + (pos60.left + 4) + 'px;top:' + (pos60.top-15) + 'px;color:#0F0;font-size:smaller">60 FPS</div>');
 
-      pos30 = plot.pointOffset({ x: 0.5, y: 1000/30});
-      chart.append('<div style="position:absolute;left:' + (pos30.left + 4) + 'px;top:' + (pos30.top-15) + 'px;color:#FF0;font-size:smaller">30 FPS</div>');
+        pos30 = plot.pointOffset({ x: 0.5, y: 1000/30});
+        chart.append('<div style="position:absolute;left:' + (pos30.left + 4) + 'px;top:' + (pos30.top-15) + 'px;color:#FF0;font-size:smaller">30 FPS</div>');
+      }
+
+      add_fps_label();
 
       overview = $.plot("#overview", data, overview_options);
 
@@ -100,11 +104,13 @@ function app(frame_data, gt_data, rt_data) {
             max: ranges.xaxis.to
           }
         }));
+        add_fps_label();
         overview.setSelection(ranges, true);
       });
 
       $("#chart").bind("plotunselected", function(event, ranges) {
         plot = $.plot("#chart", data, chart_options);
+        add_fps_label();
         overview.clearSelection(true);
       });
 
@@ -115,6 +121,7 @@ function app(frame_data, gt_data, rt_data) {
       $("#overview").bind("plotunselected", function(event)
       {
         plot = $.plot("#chart", data, chart_options);
+        add_fps_label();
         plot.clearSelection(true);
       });
     });
