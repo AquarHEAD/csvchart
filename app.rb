@@ -60,9 +60,30 @@ get "/chart/:filename/?" do
   haml :chart
 end
 
-get "/remove/:filename/?" do
+get "/delete/:filename/?" do
   if File.exist? "uploads/#{params[:filename]}"
     File.delete "uploads/#{params[:filename]}"
   end
   redirect "/"
+end
+
+get "/multi/:multifiles/?" do
+  @title = "Multi Chart"
+  @files = []
+  params[:multifiles].split(";").each do |filename|
+    frame_data = []
+    gt_data = []
+    rt_data = []
+    if File.exist? "uploads/#{filename}"
+      pdata = CSV.read("uploads/#{filename}")
+      pdata[5..-1].each do |row|
+        frame_data.push [row[0], row[1]]
+        gt_data.push [row[0], row[2]]
+        rt_data.push [row[0], row[3]]
+      end
+    end
+    basename = File.basename(filename, File.extname(filename))
+    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data})
+  end
+  haml :multi
 end

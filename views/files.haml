@@ -2,9 +2,9 @@
   .col-md-6.col-md-offset-3
     %h1
       Chart List
-      %small
-        %a{href: "/upload"} Upload CSV
-.row
+      %a.btn.btn-primary{href: "/upload"} Upload CSV
+      %button.btn.btn-default#showmulti Show Multiple Charts
+.row{style: "margin-top: 20px;"}
   .col-md-6.col-md-offset-3
     %table.table.table-striped#files
       %thead
@@ -15,12 +15,19 @@
         - @files.each do |fn|
           %tr
             %td
-              %a{href: "/chart/#{fn}"}
+              %a.chartlink{href: "/chart/#{fn}"}
                 = fn
             %td
-              %a.btn.btn-default{href: "/remove/#{fn}"}
-                %span.glyphicon.glyphicon-remove
+              %a{href: "/delete/#{fn}"} Delete
 :javascript
   $(document).ready(function(){
-    $('#files').DataTable();
+    table = $('#files').DataTable();
+
+    $('#files tbody').on('click', 'tr', function() {
+      $(this).toggleClass('success');
+    });
+
+    $('#showmulti').on('click', function() {
+      window.location.href = "/multi/" + $.map($(".success .chartlink"), function(x){return x.innerText;}).join(";");
+    })
   });

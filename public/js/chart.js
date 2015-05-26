@@ -1,4 +1,4 @@
-function app(frame_data, gt_data, rt_data) {
+function app(frame_data, gt_data, rt_data, chart_id, overview_id) {
   line_option = {show: true, lineWidth: 0.8};
 
   dataset = {
@@ -83,8 +83,8 @@ function app(frame_data, gt_data, rt_data) {
       }
     });
     $(function(){
-      chart = $("#chart");
-      plot = $.plot("#chart", data, chart_options);
+      var chart = $(chart_id);
+      var plot = $.plot(chart_id, data, chart_options);
 
       function add_fps_label() {
         pos60 = plot.pointOffset({ x: 0.5, y: 1000/60});
@@ -96,10 +96,10 @@ function app(frame_data, gt_data, rt_data) {
 
       add_fps_label();
 
-      overview = $.plot("#overview", data, overview_options);
+      overview = $.plot(overview_id, data, overview_options);
 
-      $("#chart").bind("plotselected", function(event, ranges) {
-        plot = $.plot("#chart", data, $.extend(true, {}, chart_options, {
+      $(chart_id).bind("plotselected", function(event, ranges) {
+        plot = $.plot(chart_id, data, $.extend(true, {}, chart_options, {
           xaxis: {
             min: ranges.xaxis.from,
             max: ranges.xaxis.to
@@ -109,19 +109,19 @@ function app(frame_data, gt_data, rt_data) {
         overview.setSelection(ranges, true);
       });
 
-      $("#chart").bind("plotunselected", function(event, ranges) {
-        plot = $.plot("#chart", data, chart_options);
+      $(chart_id).bind("plotunselected", function(event, ranges) {
+        plot = $.plot(chart_id, data, chart_options);
         add_fps_label();
         overview.clearSelection(true);
       });
 
-      $("#overview").bind("plotselected", function(event, ranges)
+      $(overview_id).bind("plotselected", function(event, ranges)
       {
           plot.setSelection(ranges);
       });
-      $("#overview").bind("plotunselected", function(event)
+      $(overview_id).bind("plotunselected", function(event)
       {
-        plot = $.plot("#chart", data, chart_options);
+        plot = $.plot(chart_id, data, chart_options);
         add_fps_label();
         plot.clearSelection(true);
       });

@@ -1,5 +1,5 @@
 %h1
-  = @filename
+  Multi Chart
   %small
     %a{href: "/"} Back to Index
 %form#choices.form-inline{action: "javascript:void(0);"}
@@ -16,7 +16,10 @@
       %input{type: "checkbox", name: "rt", checked: "checked", id: "check_rt"}
       Render Thread
   %button{type: "submit", id: "replot"} Replot
-#chart{style: "width:100%; height:450px; margin: 20 auto;"}
-#overview{style: "width:100%; height: 150px; margin: 20 auto;"}
-:javascript
-  app(#{@frame_data}, #{@gt_data}, #{@rt_data}, "#chart", "#overview");
+- @files.each_index do |idx|
+  %h3
+    = @files[idx][:basename]
+  .chart{style: "width:100%; height:450px; margin: 20 auto;", id: "chart#{idx}"}
+  .overview{style: "width:100%; height: 150px; margin: 20 auto;", id: "overview#{idx}"}
+  :javascript
+    app(#{@files[idx][:fd]}, #{@files[idx][:gd]}, #{@files[idx][:rd]}, "#chart#{idx}", "#overview#{idx}");
