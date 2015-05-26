@@ -1,12 +1,26 @@
-%h1
-  Chart List
-  %small
-    %a{href: "/upload"} Upload CSV
-%ul
-  - @files.each do |fn|
-    %li
-      %a{href: "/chart/#{fn}"}
-        = fn
-      |
-      %a.btn.btn-default{href: "/remove/#{fn}"}
-        %span.glyphicon.glyphicon-remove
+.row
+  .col-md-6.col-md-offset-3
+    %h1
+      Chart List
+      %small
+        %a{href: "/upload"} Upload CSV
+.row
+  .col-md-6.col-md-offset-3
+    %table.table.table-striped#files
+      %thead
+        %tr
+          %th Name
+          %th Action
+      %tbody
+        - @files.each do |fn|
+          %tr
+            %td
+              %a{href: "/chart/#{fn}"}
+                = fn
+            %td
+              %a.btn.btn-default{href: "/remove/#{fn}"}
+                %span.glyphicon.glyphicon-remove
+:javascript
+  $(document).ready(function(){
+    $('#files').DataTable();
+  });
