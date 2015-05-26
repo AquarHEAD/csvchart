@@ -96,7 +96,7 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id) {
 
       add_fps_label();
 
-      overview = $.plot(overview_id, data, overview_options);
+      var overview = $.plot(overview_id, data, overview_options);
 
       $(chart_id).bind("plotselected", function(event, ranges) {
         plot = $.plot(chart_id, data, $.extend(true, {}, chart_options, {
