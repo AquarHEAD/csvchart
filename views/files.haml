@@ -21,7 +21,9 @@
               %a{href: "/delete/#{fn}"} Delete
 :javascript
   $(document).ready(function(){
-    table = $('#files').DataTable();
+    table = $('#files').DataTable({
+      lengthMenu: [25, 50, "All"]
+    });
 
     $('#files tbody').on('click', 'tr', function() {
       $(this).toggleClass('success');
