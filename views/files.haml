@@ -28,6 +28,8 @@
     });
 
     $('#showmulti').on('click', function() {
-      window.location.href = "/multi/" + $.map($(".success .chartlink"), function(x){return x.innerText;}).join(";");
+      if ($(".success .chartlink").length > 0) {
+        window.location.href = "/multi/" + $.map($(".success .chartlink"), function(x){return x.innerText;}).join(";");
+      }
     })
   });
