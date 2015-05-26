@@ -5,18 +5,36 @@ require 'haml'
 require 'csv'
 
 get "/upload/?" do
+  @title = "Upload"
   haml :upload
 end
 
 post "/upload/?" do
-  if File.extname(params['csvfile'][:filename]) != ".csv"
-    halt 401
+  @errors = []
+  unless params[:changelist] && params[:changelist].length > 0
+    @errors.push "Must provide a CL number"
   end
-  File.open('uploads/' + params['csvfile'][:filename], "w") do |f|
-    content = params['csvfile'][:tempfile].read
-    f.write(content)
+  unless params[:chartname] && params[:chartname].length > 0
+    @errors.push "Must provide a meaningful chart name"
   end
-  redirect "/chart/#{params['csvfile'][:filename]}"
+  if !params[:csvfile]
+    @errors.push "Must provide a CSV file"
+  elsif File.extname(params[:csvfile][:filename]) != ".csv"
+    @errors.push "Must provide a CSV file"
+  end
+  if File.exist? "uploads/#{params[:changelist]}-#{params[:chartname]}.csv"
+    @errors.push "Duplicate changelist and chart name"
+  end
+  if @errors.length > 0
+    @title = "Upload"
+    haml :upload
+  else
+    File.open("uploads/#{params[:changelist]}-#{params[:chartname]}.csv", "w") do |f|
+      content = params[:csvfile][:tempfile].read
+      f.write(content)
+    end
+    redirect "/chart/#{params[:changelist]}-#{params[:chartname]}.csv"
+  end
 end
 
 get "/" do

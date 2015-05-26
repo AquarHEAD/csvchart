@@ -1,7 +1,17 @@
-%html
-  %body
-    %h1 File uploader!
-    %form(method="post" enctype='multipart/form-data')
-      %input(type='file' name='csvfile')
-      %br
-      %input(type='submit' value='Upload!')
+%h1 Upload New Chart
+%hr/
+- if @errors
+  - @errors.each do |err_msg|
+    .alert.alert-danger
+      = err_msg
+%form(method="post" enctype='multipart/form-data')
+  .form-group
+    %label Changelist Number
+    %input.form-control{type: "text", name: "changelist"}
+  .form-group
+    %label Chart Name
+    %input.form-control{type: "text", name: "chartname"}
+  .form-group
+    %label CSV file
+    %input{type: "file", name:"csvfile"}
+  %button.btn.btn-primary{type: "submit"} Upload!
