@@ -47,9 +47,25 @@ get "/chart/:filename/?" do
   @frame_data = []
   @gt_data = []
   @rt_data = []
+  @events = []
   if File.exist? "uploads/#{params[:filename]}"
-    pdata = CSV.read("uploads/#{params[:filename]}")
-    pdata[5..-1].each do |row|
+    pfile = File.new("uploads/#{params[:filename]}")
+    plines = pfile.read.lines
+    event_idx = plines.index("Time,Events\n")
+    if event_idx
+      pdata = CSV.parse(plines[5..(event_idx-1)].join)
+      event_lines = plines[(event_idx+1)..-1]
+      raw_events = event_lines.map do |el|
+        {time: el.strip.split(",")[0], description: el.strip.split(",")[1]}
+      end
+      raw_events.sort! { |a,b| a[:time] <=> b[:time] }
+      raw_events.each do |re|
+        @events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 2, color: '#FFF'})"
+      end
+    else
+      pdata = CSV.parse(plines[5..-1].join)
+    end
+    pdata.each do |row|
       @frame_data.push [row[0], row[1]]
       @gt_data.push [row[0], row[2]]
       @rt_data.push [row[0], row[3]]
@@ -74,16 +90,32 @@ get "/multi/:multifiles/?" do
     frame_data = []
     gt_data = []
     rt_data = []
+    events = []
     if File.exist? "uploads/#{filename}"
-      pdata = CSV.read("uploads/#{filename}")
-      pdata[5..-1].each do |row|
+      pfile = File.new("uploads/#{filename}")
+      plines = pfile.read.lines
+      event_idx = plines.index("Time,Events\n")
+      if event_idx
+        pdata = CSV.parse(plines[5..(event_idx-1)].join)
+        event_lines = plines[(event_idx+1)..-1]
+        raw_events = event_lines.map do |el|
+          {time: el.strip.split(",")[0], description: el.strip.split(",")[1]}
+        end
+        raw_events.sort! { |a,b| a[:time] <=> b[:time] }
+        raw_events.each do |re|
+          events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 2, color: '#FFF'})"
+        end
+      else
+        pdata = CSV.parse(plines[5..-1].join)
+      end
+      pdata.each do |row|
         frame_data.push [row[0], row[1]]
         gt_data.push [row[0], row[2]]
         rt_data.push [row[0], row[3]]
       end
     end
     basename = File.basename(filename, File.extname(filename))
-    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data})
+    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data, ed: events})
   end
   haml :multi
 end

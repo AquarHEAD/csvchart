@@ -1,13 +1,18 @@
-function app(frame_data, gt_data, rt_data, chart_id, overview_id) {
-  line_option = {show: true, lineWidth: 0.8};
+function app(frame_data, gt_data, rt_data, chart_id, overview_id, event_markings) {
+  var ems = [];
+  if (typeof event_markings !== 'undefined') {
+    ems = event_markings.map( function (x) { return eval(x) })
+  }
 
-  dataset = {
+  var line_option = {show: true, lineWidth: 0.8};
+
+  var dataset = {
     "frame": {data: frame_data, label: "Frame (ms)", lines: line_option},
     "gt": {data: gt_data, label: "GT (ms)", lines: line_option},
     "rt": {data: rt_data, label: "RT (ms)", lines: line_option}
   }
 
-  chart_options = {
+  var chart_options = {
     legend: {
       position: "ne",
       backgroundColor: "#EAE8FF"
@@ -41,11 +46,11 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id) {
           lineWidth: 1,
           color: "#FF0"
         }
-      ]
+      ].concat(ems)
     }
   };
 
-  overview_options = {
+  var overview_options = {
     series: {
       lines: {
         show: true,
