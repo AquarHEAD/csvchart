@@ -92,14 +92,22 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, event_markings
       var plot = $.plot(chart_id, data, chart_options);
 
       function add_fps_label() {
-        pos60 = plot.pointOffset({ x: 0.5, y: 1000/60});
+        var pos60 = plot.pointOffset({ x: 0.5, y: 1000/60});
         chart.append('<div style="position:absolute;left:' + (pos60.left + 4) + 'px;top:' + (pos60.top-15) + 'px;color:#0F0;font-size:smaller">60 FPS</div>');
 
-        pos30 = plot.pointOffset({ x: 0.5, y: 1000/30});
+        var pos30 = plot.pointOffset({ x: 0.5, y: 1000/30});
         chart.append('<div style="position:absolute;left:' + (pos30.left + 4) + 'px;top:' + (pos30.top-15) + 'px;color:#FF0;font-size:smaller">30 FPS</div>');
       }
 
+      function add_event_labels() {
+        ems.forEach( function(em) {
+          var pos = plot.pointOffset({ x: em.xaxis.from, y: 45});
+          chart.append('<div style="transform: rotate(-45deg);transform-origin: left top 0;position: absolute;left:' + (pos.left + 4) + 'px;top:' + (pos.top - 12) + 'px;color:#000;font-size:smaller">' + em.description + '</div>');
+        });
+      }
+
       add_fps_label();
+      add_event_labels();
 
       var overview = $.plot(overview_id, data, overview_options);
 
@@ -111,12 +119,14 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, event_markings
           }
         }));
         add_fps_label();
+        add_event_labels();
         overview.setSelection(ranges, true);
       });
 
       $(chart_id).bind("plotunselected", function(event, ranges) {
         plot = $.plot(chart_id, data, chart_options);
         add_fps_label();
+        add_event_labels();
         overview.clearSelection(true);
       });
 
@@ -128,6 +138,7 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, event_markings
       {
         plot = $.plot(chart_id, data, chart_options);
         add_fps_label();
+        add_event_labels();
         plot.clearSelection(true);
       });
     });

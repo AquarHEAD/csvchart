@@ -56,11 +56,11 @@ get "/chart/:filename/?" do
       pdata = CSV.parse(plines[5..(event_idx-1)].join)
       event_lines = plines[(event_idx+1)..-1]
       raw_events = event_lines.map do |el|
-        {time: el.strip.split(",")[0], description: el.strip.split(",")[1]}
+        {time: el.strip.split(",")[0], description: el.strip.split(",")[1].gsub(/"/, "")}
       end
       raw_events.sort! { |a,b| a[:time] <=> b[:time] }
-      raw_events.each do |re|
-        @events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF'})"
+      @events = raw_events.map do |re|
+        "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF', description: '#{re[:description]}'})"
       end
     else
       pdata = CSV.parse(plines[5..-1].join)
@@ -99,11 +99,11 @@ get "/multi/:multifiles/?" do
         pdata = CSV.parse(plines[5..(event_idx-1)].join)
         event_lines = plines[(event_idx+1)..-1]
         raw_events = event_lines.map do |el|
-          {time: el.strip.split(",")[0], description: el.strip.split(",")[1]}
+          {time: el.strip.split(",")[0], description: el.strip.split(",")[1].gsub(/"/, "")}
         end
         raw_events.sort! { |a,b| a[:time] <=> b[:time] }
-        raw_events.each do |re|
-          events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF'})"
+        events = raw_events.map do |re|
+          "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF', description: '#{re[:description]}'})"
         end
       else
         pdata = CSV.parse(plines[5..-1].join)
