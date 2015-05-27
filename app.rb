@@ -60,7 +60,7 @@ get "/chart/:filename/?" do
       end
       raw_events.sort! { |a,b| a[:time] <=> b[:time] }
       raw_events.each do |re|
-        @events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 2, color: '#FFF'})"
+        @events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF'})"
       end
     else
       pdata = CSV.parse(plines[5..-1].join)
@@ -103,7 +103,7 @@ get "/multi/:multifiles/?" do
         end
         raw_events.sort! { |a,b| a[:time] <=> b[:time] }
         raw_events.each do |re|
-          events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 2, color: '#FFF'})"
+          events.push "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF'})"
         end
       else
         pdata = CSV.parse(plines[5..-1].join)
