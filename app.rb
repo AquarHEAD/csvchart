@@ -29,7 +29,7 @@ post "/upload/?" do
     @title = "Upload"
     haml :upload
   else
-    File.open("uploads/#{params[:changelist]}-#{params[:chartname]}.csv", "w") do |f|
+    File.open("uploads/CL#{params[:changelist]}-#{params[:chartname]}.csv", "w") do |f|
       content = params[:csvfile][:tempfile].read
       f.write(content)
     end

@@ -16,7 +16,7 @@
           %tr
             %td
               %a.chartlink{href: "/chart/#{fn}"}
-                = fn
+                = File.basename(fn, File.extname(fn))
             %td
               %a{href: "/delete/#{fn}"} Delete
   .col-md-2
