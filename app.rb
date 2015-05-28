@@ -14,6 +14,9 @@ post "/upload/?" do
   unless params[:changelist] && params[:changelist].length > 0
     @errors.push "Must provide a CL number"
   end
+  if params[:changelist] && !(/\A\d+\z/ === params[:changelist])
+    @errors.push "CL number can only be an integer"
+  end
   unless params[:chartname] && params[:chartname].length > 0
     @errors.push "Must provide a meaningful chart name"
   end
