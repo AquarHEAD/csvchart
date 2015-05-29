@@ -9,7 +9,9 @@
     %form(method="post" enctype='multipart/form-data')
       .form-group
         %label Changelist Number
-        %input.form-control{type: "text", name: "changelist"}
+        .input-group
+          .input-group-addon CL
+          %input.form-control{type: "text", name: "changelist"}
       .form-group
         %label Platform
         %select.form-control{name: "platform"}
