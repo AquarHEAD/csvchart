@@ -97,7 +97,7 @@ get "/multi/:multifiles/?" do
     if File.exist? "uploads/#{filename}"
       pfile = File.new("uploads/#{filename}")
       plines = pfile.read.lines
-      event_idx = plines.index("Time,Events\n")
+      event_idx = plines.find_index { |x| x.start_with? "Time,Events" }
       if event_idx
         pdata = CSV.parse(plines[5..(event_idx-1)].join)
         event_lines = plines[(event_idx+1)..-1]

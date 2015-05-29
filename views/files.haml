@@ -35,7 +35,7 @@
 
     $('#showmulti').on('click', function() {
       if ($(".success .chartlink").length > 0) {
-        window.location.href = "/multi/" + $.map($(".success .chartlink"), function(x){return x.innerText;}).join(";");
+        window.location.href = "/multi/" + $.map($(".success .chartlink"), function(x){return x.innerText + ".csv";}).join(";");
       }
     })
   });
