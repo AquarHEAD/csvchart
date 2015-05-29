@@ -1,17 +1,31 @@
-%h1 Upload New Chart
-%hr/
-- if @errors
-  - @errors.each do |err_msg|
-    .alert.alert-danger
-      = err_msg
-%form(method="post" enctype='multipart/form-data')
-  .form-group
-    %label Changelist Number
-    %input.form-control{type: "text", name: "changelist"}
-  .form-group
-    %label Chart Name
-    %input.form-control{type: "text", name: "chartname"}
-  .form-group
-    %label CSV file
-    %input{type: "file", name:"csvfile"}
-  %button.btn.btn-primary{type: "submit"} Upload!
+.row
+  .col-md-8.col-md-offset-2
+    %h1 Upload New Chart
+    %hr/
+    - if @errors
+      - @errors.each do |err_msg|
+        .alert.alert-danger
+          = err_msg
+    %form(method="post" enctype='multipart/form-data')
+      .form-group
+        %label Changelist Number
+        %input.form-control{type: "text", name: "changelist"}
+      .form-group
+        %label Platform
+        %select.form-control{name: "platform"}
+          %option{value: "Note4"} Note4
+          %option{value: "S6"} S6
+          %option{value: "Note5"} Note5
+      .form-group
+        %label Android Version
+        %select.form-control{name: "androidversion"}
+          %option{value: "4.4.4"} 4.4.4
+          %option{value: "5.0.1"} 5.0.1
+          %option{value: "5.0.2"} 5.0.2
+      .form-group
+        %label Chart Name
+        %input.form-control{type: "text", name: "chartname"}
+      .form-group
+        %label CSV file
+        %input{type: "file", name:"csvfile"}
+      %button.btn.btn-primary{type: "submit"} Upload!

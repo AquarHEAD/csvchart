@@ -25,18 +25,18 @@ post "/upload/?" do
   elsif File.extname(params[:csvfile][:filename]) != ".csv"
     @errors.push "Must provide a CSV file"
   end
-  if File.exist? "uploads/#{params[:changelist]}-#{params[:chartname]}.csv"
-    @errors.push "Duplicate changelist and chart name"
+  if File.exist? "uploads/#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.csv"
+    @errors.push "Duplicate chart"
   end
   if @errors.length > 0
     @title = "Upload"
     haml :upload
   else
-    File.open("uploads/CL#{params[:changelist]}_#{params[:chartname]}.csv", "w") do |f|
+    File.open("uploads/CL#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.csv", "w") do |f|
       content = params[:csvfile][:tempfile].read
       f.write(content)
     end
-    redirect "/chart/CL#{params[:changelist]}_#{params[:chartname]}.csv"
+    redirect "/chart/CL#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.csv"
   end
 end
 
@@ -54,7 +54,7 @@ get "/chart/:filename/?" do
   if File.exist? "uploads/#{params[:filename]}"
     pfile = File.new("uploads/#{params[:filename]}")
     plines = pfile.read.lines
-    event_idx = plines.index("Time,Events\n")
+    event_idx = plines.find_index { |x| x.start_with? "Time,Events" }
     if event_idx
       pdata = CSV.parse(plines[5..(event_idx-1)].join)
       event_lines = plines[(event_idx+1)..-1]
