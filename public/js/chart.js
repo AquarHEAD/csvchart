@@ -141,6 +141,7 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, leftevents_id,
       var latestPosition = null;
 
       function updateEvents() {
+        updateEventsTimeout = null;
         var pos = latestPosition;
         var axes = plot.getAxes();
         if (pos.x < axes.xaxis.min || pos.x > axes.xaxis.max ||
@@ -151,17 +152,16 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, leftevents_id,
         // Add events +-6% around mouse position (to different well)
         $(leftevents_id).empty();
         ems.filter(function(em) {
-          return (em.xaxis.from <= pos.x) && (em.xaxis.from <= axes.xaxis.max) && ((pos.x - em.xaxis.from) < axes.xaxis.max * 0.06);
+          return (em.xaxis.from <= pos.x) && (em.xaxis.from <= axes.xaxis.max) && ((pos.x - em.xaxis.from) < axes.xaxis.max * 0.03);
         }).forEach(function(em) {
           $(leftevents_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
         });
         $(rightevents_id).empty();
         ems.filter(function(em) {
-          return (em.xaxis.from > pos.x) && (em.xaxis.from <= axes.xaxis.max) && ((em.xaxis.from - pos.x) < axes.xaxis.max * 0.06);
+          return (em.xaxis.from > pos.x) && (em.xaxis.from <= axes.xaxis.max) && ((em.xaxis.from - pos.x) < axes.xaxis.max * 0.03);
         }).forEach(function(em) {
           $(rightevents_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
         });
-        updateEventsTimeout = null;
       }
 
       $(chart_id).bind("plothover", function(event, pos, item) {
