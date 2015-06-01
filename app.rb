@@ -122,3 +122,7 @@ get "/multi/:multifiles/?" do
   end
   haml :multi
 end
+
+get '/download/:filename/?' do
+  send_file "./uploads/#{params[:filename]}", filename: params[:filename], type: "application/octet-stream"
+end
