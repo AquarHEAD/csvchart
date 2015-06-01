@@ -1,22 +1,31 @@
-%h1
-  = @filename
-  %small
-    %a{href: "/"} Back to Index
-%form#choices.form-inline{action: "javascript:void(0);"}
-  .checkbox
-    %label
-      %input{type: "checkbox", name: "frame", checked: "checked", id: "check_frame"}
-      Frame
-  .checkbox
-    %label
-      %input{type: "checkbox", name: "gt", checked: "checked", id: "check_gt"}
-      Game Thread
-  .checkbox
-    %label
-      %input{type: "checkbox", name: "rt", checked: "checked", id: "check_rt"}
-      Render Thread
-  %button{type: "submit", id: "replot"} Replot
-#chart{style: "width:100%; height:450px; margin: 20 auto; margin-top: 150px;"}
-#overview{style: "width:100%; height: 150px; margin: 20 auto;"}
+.row
+  .col-md-8.col-md-offset-2
+    %h1
+      = @filename
+      %small
+        %a.btn.btn-info{href: "/"} Back to Index
+    %form#choices.form-inline{action: "javascript:void(0);"}
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "frame", checked: "checked", id: "check_frame"}
+          Frame
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "gt", checked: "checked", id: "check_gt"}
+          Game Thread
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "rt", checked: "checked", id: "check_rt"}
+          Render Thread
+      %button.btn.btn-default{type: "submit", id: "replot"} Replot
+.row
+  .col-md-6
+    .well#leftevents
+  .col-md-6
+    .well#rightevents
+.row
+  .col-md-12
+    #chart{style: "width:100%; height:450px; margin: 20 auto;"}
+    #overview{style: "width:100%; height: 150px; margin: 20 auto;"}
 :javascript
-  app(#{@frame_data}, #{@gt_data}, #{@rt_data}, "#chart", "#overview", #{@events});
+  app(#{@frame_data}, #{@gt_data}, #{@rt_data}, "#chart", "#overview", "#leftevents", "#rightevents", #{@events});
