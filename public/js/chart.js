@@ -1,4 +1,4 @@
-function app(frame_data, gt_data, rt_data, chart_id, overview_id, leftevents_id, rightevents_id, event_markings) {
+function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id, event_markings) {
   // Trick? to allow empty event_markings
   var ems = [];
   if (typeof event_markings !== 'undefined') {
@@ -150,17 +150,11 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, leftevents_id,
         }
 
         // Add events +-6% around mouse position (to different well)
-        $(leftevents_id).empty();
+        $(eventslist_id).empty();
         ems.filter(function(em) {
-          return (em.xaxis.from <= pos.x) && (em.xaxis.from <= axes.xaxis.max) && ((pos.x - em.xaxis.from) < axes.xaxis.max * 0.03);
+          return (em.xaxis.from <= axes.xaxis.max) && (Math.abs(pos.x - em.xaxis.from) / axes.xaxis.max * $(chart_id).width() <= 5);
         }).forEach(function(em) {
-          $(leftevents_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
-        });
-        $(rightevents_id).empty();
-        ems.filter(function(em) {
-          return (em.xaxis.from > pos.x) && (em.xaxis.from <= axes.xaxis.max) && ((em.xaxis.from - pos.x) < axes.xaxis.max * 0.03);
-        }).forEach(function(em) {
-          $(rightevents_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
+          $(eventslist_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
         });
       }
 

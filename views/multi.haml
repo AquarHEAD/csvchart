@@ -24,12 +24,12 @@
       %h3
         = @files[idx][:basename]
   .row
-    .col-md-6
-      .well{id: "leftevents#{idx}"}
-    .col-md-6
-      .well{id: "rightevents#{idx}"}
+    .col-md-10
+      .chart{style: "width:100%; height:450px; margin: 20 auto;", id: "chart#{idx}"}
+    .col-md-2
+      .well{id: "eventslist#{idx}"}
   .row
-    .chart{style: "width:100%; height:450px; margin: 20 auto;", id: "chart#{idx}"}
-    .overview{style: "width:100%; height: 150px; margin: 20 auto;", id: "overview#{idx}"}
+    .col-md-12
+      .overview{style: "width:100%; height: 150px; margin: 20 auto;", id: "overview#{idx}"}
   :javascript
-    app(#{@files[idx][:fd]}, #{@files[idx][:gd]}, #{@files[idx][:rd]}, "#chart#{idx}", "#overview#{idx}", "#leftevents#{idx}", "#rightevents#{idx}", #{@files[idx][:ed]});
+    app(#{@files[idx][:fd]}, #{@files[idx][:gd]}, #{@files[idx][:rd]}, "#chart#{idx}", "#overview#{idx}", "#eventslist#{idx}", #{@files[idx][:ed]});

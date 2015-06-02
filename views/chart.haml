@@ -19,13 +19,12 @@
           Render Thread
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 .row
-  .col-md-6
-    .well#leftevents
-  .col-md-6
-    .well#rightevents
+  .col-md-10
+    #chart{style: "width:100%; height:450px; margin: 20 auto;"}
+  .col-md-2
+    .well#eventslist
 .row
   .col-md-12
-    #chart{style: "width:100%; height:450px; margin: 20 auto;"}
     #overview{style: "width:100%; height: 150px; margin: 20 auto;"}
 :javascript
-  app(#{@frame_data}, #{@gt_data}, #{@rt_data}, "#chart", "#overview", "#leftevents", "#rightevents", #{@events});
+  app(#{@frame_data}, #{@gt_data}, #{@rt_data}, "#chart", "#overview", "#eventslist", #{@events});
