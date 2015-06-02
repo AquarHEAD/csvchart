@@ -28,7 +28,8 @@
 :javascript
   $(document).ready(function(){
     table = $('#files').DataTable({
-      lengthMenu: [25, 50, "All"]
+      lengthMenu: [25, 50, "All"],
+      order: [[0, "desc"]]
     });
 
     $('#files tbody').on('click', 'tr', function() {
