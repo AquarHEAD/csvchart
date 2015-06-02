@@ -1,4 +1,4 @@
-function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id, event_markings) {
+function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id, eventstitle_id, event_markings) {
   // Trick? to allow empty event_markings
   var ems = [];
   if (typeof event_markings !== 'undefined') {
@@ -149,13 +149,16 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id,
           return ;
         }
 
-        // Add events +-6% around mouse position (to different well)
+        // Add events +-5px around mouse position
         $(eventslist_id).empty();
         ems.filter(function(em) {
           return (em.xaxis.from <= axes.xaxis.max) && (Math.abs(pos.x - em.xaxis.from) / axes.xaxis.max * $(chart_id).width() <= 5);
         }).forEach(function(em) {
           $(eventslist_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
         });
+
+        // Add mouse position to events title
+        $(eventstitle_id).text("Events around " + pos.x.toFixed(2));
       }
 
       $(chart_id).bind("plothover", function(event, pos, item) {

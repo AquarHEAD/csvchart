@@ -27,9 +27,10 @@
     .col-md-10
       .chart{style: "width:100%; height:450px; margin: 20 auto;", id: "chart#{idx}"}
     .col-md-2
+      %h4{id: "eventstitle#{idx}"} Events
       .well{id: "eventslist#{idx}"}
   .row
     .col-md-12
       .overview{style: "width:100%; height: 150px; margin: 20 auto;", id: "overview#{idx}"}
   :javascript
-    app(#{@files[idx][:fd]}, #{@files[idx][:gd]}, #{@files[idx][:rd]}, "#chart#{idx}", "#overview#{idx}", "#eventslist#{idx}", #{@files[idx][:ed]});
+    app(#{@files[idx][:fd]}, #{@files[idx][:gd]}, #{@files[idx][:rd]}, "#chart#{idx}", "#overview#{idx}", "#eventslist#{idx}", "#eventstitle#{idx}", #{@files[idx][:ed]});
