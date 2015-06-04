@@ -181,23 +181,14 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id,
             }
           }
 
-          // Now Interpolate
-
           var y,
             p1 = series.data[j - 1],
             p2 = series.data[j];
 
-          var x1 = Number(p1[0]),
-            y1 = Number(p1[1]),
-            x2 = Number(p2[0]),
-            y2 = Number(p2[1]);
-
           if (p1 == null) {
-            y = y2;
-          } else if (p2 == null) {
-            y = y1;
+            y = Number(p2[1]);
           } else {
-            y = y1 + (y2 - y1) * (pos.x - x1) / (x2 - x1);
+            y = Number(p1[1]);
           }
 
           legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + " (ms)"));
