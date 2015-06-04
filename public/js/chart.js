@@ -8,9 +8,9 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id,
   var line_option = {show: true, lineWidth: 0.8};
 
   var dataset = {
-    "frame": {data: frame_data, label: "Frame (ms)", lines: line_option},
-    "gt": {data: gt_data, label: "GT (ms)", lines: line_option},
-    "rt": {data: rt_data, label: "RT (ms)", lines: line_option}
+    "frame": {data: frame_data, label: "Frame = 00.00 (ms)", lines: line_option},
+    "gt": {data: gt_data, label: "GT = 00.00 (ms)", lines: line_option},
+    "rt": {data: rt_data, label: "RT = 00.00 (ms)", lines: line_option}
   }
 
   var chart_options = {
@@ -140,6 +140,13 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id,
       var updateEventsTimeout = null;
       var latestPosition = null;
 
+      var legends = $(chart_id + " .legendLabel");
+
+      legends.each(function () {
+        // fix the widths so they don't jump around
+        $(this).css('width', $(this).width());
+      });
+
       function updateEvents() {
         updateEventsTimeout = null;
         var pos = latestPosition;
@@ -159,6 +166,42 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id,
 
         // Add mouse position to events title
         $(eventstitle_id).text("Events around " + pos.x.toFixed(2));
+
+        // Update values at mouse position
+        var i, j, dataset = plot.getData();
+        for (i = 0; i < dataset.length; ++i) {
+
+          var series = dataset[i];
+
+          // Find the nearest points, x-wise
+
+          for (j = 0; j < series.data.length; ++j) {
+            if (series.data[j][0] > pos.x) {
+              break;
+            }
+          }
+
+          // Now Interpolate
+
+          var y,
+            p1 = series.data[j - 1],
+            p2 = series.data[j];
+
+          var x1 = Number(p1[0]),
+            y1 = Number(p1[1]),
+            x2 = Number(p2[0]),
+            y2 = Number(p2[1]);
+
+          if (p1 == null) {
+            y = y2;
+          } else if (p2 == null) {
+            y = y1;
+          } else {
+            y = y1 + (y2 - y1) * (pos.x - x1) / (x2 - x1);
+          }
+
+          legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + " (ms)"));
+        }
       }
 
       $(chart_id).bind("plothover", function(event, pos, item) {
