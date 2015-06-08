@@ -10,17 +10,19 @@
       %thead
         %tr
           %th Name
+          %th Date
           %th Action
       %tbody
-        - @files.each do |fn|
+        - @files.each do |ff|
           %tr
             %td
-              %a.chartlink{href: "/chart/#{fn}"}
-                = File.basename(fn, File.extname(fn))
+              %a.chartlink{href: "/chart/#{ff[:filename]}"}
+                = File.basename(ff[:filename], File.extname(ff[:filename]))
+            %td.date{iso8601date: ff[:datetime].iso8601}
             %td
-              %a{href: "/delete/#{fn}"} Delete
+              %a{href: "/delete/#{ff[:filename]}"} Delete
               |
-              %a{href: "/download/#{fn}"} Download
+              %a{href: "/download/#{ff[:filename]}"} Download
   .col-md-2
     %h3 Tips
     %ol
@@ -51,4 +53,8 @@
         window.location.href = "/multi/" + selectedCharts.join(";");
       }
     })
+
+    $(".date").each(function(idx, d) {
+      d.innerText = moment(d.attributes["iso8601date"].textContent, moment.ISO_8601).fromNow();
+    });
   });

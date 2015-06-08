@@ -41,7 +41,9 @@ post "/upload/?" do
 end
 
 get "/" do
-  @files = Dir.entries("uploads").select { |x| !x.start_with? '.' }
+  @files = Dir.entries("uploads").select { |x| !x.start_with? '.' }.map do |fn|
+    {filename: fn, datetime: File.ctime("uploads/#{fn}")}
+  end
   @title = "Index"
   haml :files
 end
