@@ -32,13 +32,23 @@
       order: [[0, "desc"]]
     });
 
+    var selectedCharts = [];
+
     $('#files tbody').on('click', 'tr', function() {
       $(this).toggleClass('success');
+      var csvname = $(this).children()[0].innerText + ".csv";
+      var idx = selectedCharts.indexOf(csvname);
+      if (idx == -1) {
+        selectedCharts.push(csvname);
+      }
+      else {
+        selectedCharts.splice(idx, 1);
+      }
     });
 
     $('#showmulti').on('click', function() {
-      if ($(".success .chartlink").length > 0) {
-        window.location.href = "/multi/" + $.map($(".success .chartlink"), function(x){return x.innerText + ".csv";}).join(";");
+      if (selectedCharts.length > 0) {
+        window.location.href = "/multi/" + selectedCharts.join(";");
       }
     })
   });
