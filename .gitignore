@@ -2,7 +2,7 @@
 Thumbs.db
 Desktop.ini
 
-uploads/*.csv
+uploads/*
 !*.keep
 
 test.*

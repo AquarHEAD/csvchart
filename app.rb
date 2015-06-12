@@ -3,6 +3,7 @@ require 'bundler/setup'
 require 'sinatra'
 require 'haml'
 require 'csv'
+require 'nokogiri'
 
 get "/upload/?" do
   @title = "Upload"
@@ -28,6 +29,11 @@ post "/upload/?" do
   if File.exist? "uploads/#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.csv"
     @errors.push "Duplicate chart"
   end
+  if !params[:htmlfile]
+    @errors.push "Must provide a HTML file"
+  elsif File.extname(params[:htmlfile][:filename]) != ".html"
+    @errors.push "Must provide a HTML file"
+  end
   if @errors.length > 0
     @title = "Upload"
     haml :upload
@@ -36,12 +42,16 @@ post "/upload/?" do
       content = params[:csvfile][:tempfile].read
       f.write(content)
     end
+    File.open("uploads/CL#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.html", "w") do |f|
+      content = params[:htmlfile][:tempfile].read
+      f.write(content)
+    end
     redirect "/chart/CL#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.csv"
   end
 end
 
 get "/" do
-  @files = Dir.entries("uploads").select { |x| !x.start_with? '.' }.map do |fn|
+  @files = Dir.entries("uploads").select { |x| (!x.start_with? '.') && (File.extname(x) == ".csv") }.map do |fn|
     {filename: fn, datetime: File.ctime("uploads/#{fn}")}
   end
   @title = "Index"
@@ -77,6 +87,14 @@ get "/chart/:filename/?" do
     end
   end
   @filename = File.basename(params[:filename], File.extname(params[:filename]))
+  @table_data = nil
+  if File.exist? "uploads/#{@filename}.html"
+    page = Nokogiri::HTML(open("uploads/#{@filename}.html"))
+    table = page.css("table")[0]
+    table.css("table")[0]['class'] = 'table table-bordered'
+    table.css("table")[0]['style'] = 'font-size: 12px;'
+    @table_data = table.to_s
+  end
   @title = @filename
   haml :chart
 end
@@ -120,7 +138,16 @@ get "/multi/:multifiles/?" do
       end
     end
     basename = File.basename(filename, File.extname(filename))
-    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data, ed: events})
+
+    table_data = nil
+    if File.exist? "uploads/#{basename}.html"
+      page = Nokogiri::HTML(open("uploads/#{basename}.html"))
+      table = page.css("table")[0]
+      table.css("table")[0]['class'] = 'table table-bordered'
+      table.css("table")[0]['style'] = 'font-size: 12px;'
+      table_data = table.to_s
+    end
+    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data, ed: events, table: table_data})
   end
   haml :multi
 end

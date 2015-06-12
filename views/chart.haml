@@ -20,12 +20,16 @@
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 .row
   .col-md-10
-    #chart{style: "width:100%; height:450px; margin: 20 auto;"}
+    #chart{style: "width:100%; height:400px; margin: 20 auto;"}
   .col-md-2
     %h4#eventstitle Events
     .well#eventslist
 .row
   .col-md-12
-    #overview{style: "width:100%; height: 150px; margin: 20 auto;"}
+    #overview{style: "width:100%; height: 100px; margin: 20 auto;"}
+- if @table_data
+  .row
+    .col-md-12
+      != @table_data
 :javascript
   app(#{@frame_data}, #{@gt_data}, #{@rt_data}, "#chart", "#overview", "#eventslist", "#eventstitle", #{@events});
