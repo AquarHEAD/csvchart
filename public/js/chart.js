@@ -1,4 +1,4 @@
-function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id, eventstitle_id, event_markings) {
+function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, overview_id, eventslist_id, eventstitle_id, event_markings) {
   // Trick? to allow empty event_markings
   var ems = [];
   if (typeof event_markings !== 'undefined') {
@@ -12,13 +12,17 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id,
     "gt": {data: gt_data, label: "GT = 00.00 (ms)", lines: line_option},
     "rt": {data: rt_data, label: "RT = 00.00 (ms)", lines: line_option}
   }
+  if (temp_data.length > 0) {
+    dataset["temp"] = {data: temp_data, label: "Temp = 00.00 (°C)", lines: line_option};
+    dataset["power"] = {data: power_data, label: "PL = 0", lines: line_option};
+  }
 
   var chart_options = {
     legend: {
       position: "ne",
       backgroundColor: "#EAE8FF"
     },
-    colors: ["#FE7F2D", "#51A8DD", "#439775"],
+    colors: ["#FE7F2D", "#51A8DD", "#439775", "#CB1B45", "#FEDFE1"],
     yaxis: {
       min: 0,
       max: 45,
@@ -191,7 +195,15 @@ function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id,
             y = Number(p1[1]);
           }
 
-          legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + " (ms)"));
+          var unit = " (ms)";
+          if (i == 3) {
+            unit = " (°C)";
+          }
+          if (i == 4) {
+            unit = "";
+          }
+
+          legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + unit));
         }
       }
 
