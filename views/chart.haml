@@ -40,4 +40,6 @@
     .col-md-12
       != @table_data
 :javascript
-  app(#{@frame_data}, #{@gt_data}, #{@rt_data}, #{@temp_data}, #{@power_data}, "#chart", "#overview", "#eventslist", "#eventstitle", #{@events});
+  var fd = #{@frame_data};
+  var gd = #{@gt_data};
+  app(fd, gd, #{@rt_data}, #{@temp_data}, #{@power_data}, "#chart", "#overview", "#eventslist", "#eventstitle", #{@events});

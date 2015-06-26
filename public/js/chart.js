@@ -2,7 +2,7 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
   // Trick? to allow empty event_markings
   var ems = [];
   if (typeof event_markings !== 'undefined') {
-    ems = event_markings.map( function (x) { return eval(x) })
+    ems = event_markings.map( function (x) { return eval(x) });
   }
 
   var line_option = {show: true, lineWidth: 0.8};
