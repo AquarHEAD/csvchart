@@ -18,7 +18,7 @@
             %td
               %a.chartlink{href: "/chart/#{ff[:filename]}"}
                 = File.basename(ff[:filename], File.extname(ff[:filename]))
-            %td
+            %td{'data-order': "#{ff[:datetime].iso8601}"}
               = ff[:datetime].iso8601
             %td
               %a{href: "/delete/#{ff[:filename]}"} Delete
@@ -30,7 +30,7 @@
       %li If the "Frame" orange line is above both "GT" ("Game Thread") blue and "RT" ("Render Thread") green lines, it means it is GPU bound (since GPU is not represented on this graph)
 :javascript
   $(document).ready(function(){
-    table = $('#files').dataTable({
+    $('#files').DataTable({
       lengthMenu: [[50, 25, 10, -1], [50, 25, 10, "All"]],
       order: [[0, "desc"]],
       columnDefs: [{
