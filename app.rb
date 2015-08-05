@@ -52,7 +52,7 @@ end
 
 get "/" do
   @files = Dir.entries("uploads").select { |x| (!x.start_with? '.') && (File.extname(x) == ".csv") }.map do |fn|
-    {filename: fn, datetime: File.ctime("uploads/#{fn}")}
+    {filename: fn, time: File.ctime("uploads/#{fn}")}
   end
   @title = "Index"
   haml :files

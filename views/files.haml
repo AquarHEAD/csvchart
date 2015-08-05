@@ -6,7 +6,7 @@
       %button.btn.btn-info#showmulti Show Multiple Charts
 .row{style: "margin-top: 20px;"}
   .col-md-6.col-md-offset-2
-    %table.table.table-striped#files
+    %table.table#files
       %thead
         %tr
           %th Name
@@ -18,8 +18,8 @@
             %td
               %a.chartlink{href: "/chart/#{ff[:filename]}"}
                 = File.basename(ff[:filename], File.extname(ff[:filename]))
-            %td{'data-order': "#{ff[:datetime].iso8601}"}
-              = ff[:datetime].iso8601
+            %td{'data-order': "#{ff[:time].to_i}"}
+              = ff[:time].iso8601
             %td
               %a{href: "/delete/#{ff[:filename]}"} Delete
               |
@@ -36,7 +36,15 @@
       columnDefs: [{
         targets: 1,
         render: function(data, type, full, meta) {
-          return moment(data, moment.ISO_8601).fromNow();
+          if (type == 'display' || type == 'filter') {
+            return moment(data, moment.ISO_8601).fromNow();
+          }
+          return data;
+        },
+        data: {
+          _: "1.display",
+          sort: "1.@data-order",
+          type: "1.@data-order"
         }
       }]
     });
