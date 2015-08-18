@@ -1,20 +1,10 @@
-function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, overview_id, eventslist_id, eventstitle_id, event_markings) {
-  // Trick? to allow empty event_markings
-  var ems = [];
-  if (typeof event_markings !== 'undefined') {
-    ems = event_markings.map( function (x) { return eval(x) });
-  }
-
+function app(frame_data, gt_data, rt_data, chart_id, overview_id) {
   var line_option = {show: true, lineWidth: 0.8};
 
   var dataset = {
     "frame": {data: frame_data, label: "Frame = 00.00 (ms)", lines: line_option},
     "gt": {data: gt_data, label: "GT = 00.00 (ms)", lines: line_option},
     "rt": {data: rt_data, label: "RT = 00.00 (ms)", lines: line_option}
-  }
-  if (temp_data.length > 0) {
-    dataset["temp"] = {data: temp_data, label: "Temp = 00.00 (°C)", lines: line_option};
-    dataset["power"] = {data: power_data, label: "PL = 0", lines: line_option};
   }
 
   var chart_options = {
@@ -50,7 +40,7 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
           lineWidth: 1,
           color: "#FF0"
         }
-      ].concat(ems)
+      ]
     }
   };
 
@@ -160,17 +150,6 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
           return ;
         }
 
-        // Add events +-5px around mouse position
-        $(eventslist_id).empty();
-        ems.filter(function(em) {
-          return (em.xaxis.from <= axes.xaxis.max) && (Math.abs(pos.x - em.xaxis.from) / axes.xaxis.max * $(chart_id).width() <= 5);
-        }).forEach(function(em) {
-          $(eventslist_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
-        });
-
-        // Add mouse position to events title
-        $(eventstitle_id).text("Events around " + pos.x.toFixed(2));
-
         // Update values at mouse position
         var i, j, dataset = plot.getData();
         for (i = 0; i < dataset.length; ++i) {
@@ -196,12 +175,6 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
           }
 
           var unit = " (ms)";
-          if (i == 3) {
-            unit = " (°C)";
-          }
-          if (i == 4) {
-            unit = "";
-          }
 
           legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + unit));
         }

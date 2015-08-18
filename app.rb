@@ -38,15 +38,15 @@ post "/upload/?" do
     @title = "Upload"
     haml :upload
   else
-    File.open("uploads/CL#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.csv", "w") do |f|
+    File.open("uploads/CL#{params[:changelist]}_#{params[:chartname]}.csv", "w") do |f|
       content = params[:csvfile][:tempfile].read
       f.write(content)
     end
-    File.open("uploads/CL#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.html", "w") do |f|
+    File.open("uploads/CL#{params[:changelist]}_#{params[:chartname]}.html", "w") do |f|
       content = params[:htmlfile][:tempfile].read
       f.write(content)
     end
-    redirect "/chart/CL#{params[:changelist]}_#{params[:platform]}_#{params[:androidversion]}_#{params[:chartname]}.csv"
+    redirect "/chart/CL#{params[:changelist]}_#{params[:chartname]}.csv"
   end
 end
 
@@ -62,9 +62,6 @@ get "/chart/:filename/?" do
   @frame_data = []
   @gt_data = []
   @rt_data = []
-  @temp_data = []
-  @power_data = []
-  @events = []
   if File.exist? "uploads/#{params[:filename]}"
     pfile = File.new("uploads/#{params[:filename]}")
     plines = pfile.read.lines
@@ -82,20 +79,10 @@ get "/chart/:filename/?" do
     else
       pdata = CSV.parse(plines[5..-1].join)
     end
-    if pdata[0].length == 5
-      pdata.each do |row|
-        @frame_data.push [row[0], row[1]]
-        @gt_data.push [row[0], row[2]]
-        @rt_data.push [row[0], row[3]]
-      end
-    elsif pdata[0].length == 7
-      pdata.each do |row|
-        @frame_data.push [row[0], row[1]]
-        @gt_data.push [row[0], row[2]]
-        @rt_data.push [row[0], row[3]]
-        @temp_data.push [row[0], row[5]]
-        @power_data.push [row[0], row[6]]
-      end
+    pdata.each do |row|
+      @frame_data.push [row[0], row[1]]
+      @gt_data.push [row[0], row[2]]
+      @rt_data.push [row[0], row[3]]
     end
   end
   @filename = File.basename(params[:filename], File.extname(params[:filename]))

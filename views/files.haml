@@ -18,7 +18,7 @@
             %td
               %a.chartlink{href: "/chart/#{ff[:filename]}"}
                 = File.basename(ff[:filename], File.extname(ff[:filename]))
-            %td{'data-order': "#{ff[:time].to_i}"}
+            %td{:'data-order' => "#{ff[:time].to_i}"}
               = ff[:time].iso8601
             %td
               %a{href: "/delete/#{ff[:filename]}"} Delete

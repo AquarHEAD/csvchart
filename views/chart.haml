@@ -27,11 +27,8 @@
           Power Level
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 .row
-  .col-md-10
+  .col-md-12
     #chart{style: "width:100%; height:400px; margin: 20 auto;"}
-  .col-md-2
-    %h4#eventstitle Events
-    .well#eventslist
 .row
   .col-md-12
     #overview{style: "width:100%; height: 100px; margin: 20 auto;"}
@@ -42,4 +39,5 @@
 :javascript
   var fd = #{@frame_data};
   var gd = #{@gt_data};
-  app(fd, gd, #{@rt_data}, #{@temp_data}, #{@power_data}, "#chart", "#overview", "#eventslist", "#eventstitle", #{@events});
+  var rd = #{@rt_data};
+  app(fd, gd, rd, "#chart", "#overview");
