@@ -1,10 +1,11 @@
-function app(frame_data, gt_data, rt_data, chart_id, overview_id) {
+function app(frame_data, gt_data, rt_data, gpu_data, chart_id, overview_id) {
   var line_option = {show: true, lineWidth: 0.8};
 
   var dataset = {
     "frame": {data: frame_data, label: "Frame = 00.00 (ms)", lines: line_option},
     "gt": {data: gt_data, label: "GT = 00.00 (ms)", lines: line_option},
-    "rt": {data: rt_data, label: "RT = 00.00 (ms)", lines: line_option}
+    "rt": {data: rt_data, label: "RT = 00.00 (ms)", lines: line_option},
+    "gpu": {data: gpu_data, label: "GPU = 00.00 (ms)", lines: line_option}
   }
 
   var chart_options = {

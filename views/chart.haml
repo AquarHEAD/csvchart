@@ -17,6 +17,10 @@
         %label
           %input{type: "checkbox", name: "rt", checked: "checked", id: "check_rt"}
           Render Thread
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "gpu", checked: "checked", id: "check_gpu"}
+          GPU Thread
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 .row
   .col-md-12
@@ -32,4 +36,5 @@
   var fd = #{@frame_data};
   var gd = #{@gt_data};
   var rd = #{@rt_data};
-  app(fd, gd, rd, "#chart", "#overview");
+  var gpud = #{@gpu_data};
+  app(fd, gd, rd, gpud, "#chart", "#overview");

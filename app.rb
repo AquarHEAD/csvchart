@@ -62,6 +62,7 @@ get "/chart/:filename/?" do
   @frame_data = []
   @gt_data = []
   @rt_data = []
+  @gpu_data = []
   if File.exist? "uploads/#{params[:filename]}"
     pfile = File.new("uploads/#{params[:filename]}")
     plines = pfile.read.lines
@@ -83,6 +84,7 @@ get "/chart/:filename/?" do
       @frame_data.push [row[0], row[1]]
       @gt_data.push [row[0], row[2]]
       @rt_data.push [row[0], row[3]]
+      @gpu_data.push [row[0], row[4]]
     end
   end
   @filename = File.basename(params[:filename], File.extname(params[:filename]))
@@ -112,8 +114,8 @@ get "/multi/:multifiles/?" do
     frame_data = []
     gt_data = []
     rt_data = []
-    temp_data = []
-    power_data = []
+    gpu_data = []
+
     events = []
     if File.exist? "uploads/#{filename}"
       pfile = File.new("uploads/#{filename}")
@@ -132,20 +134,11 @@ get "/multi/:multifiles/?" do
       else
         pdata = CSV.parse(plines[5..-1].join)
       end
-      if pdata[0].length == 5
-        pdata.each do |row|
-          frame_data.push [row[0], row[1]]
-          gt_data.push [row[0], row[2]]
-          rt_data.push [row[0], row[3]]
-        end
-      elsif pdata[0].length == 7
-        pdata.each do |row|
-          frame_data.push [row[0], row[1]]
-          gt_data.push [row[0], row[2]]
-          rt_data.push [row[0], row[3]]
-          temp_data.push [row[0], row[5]]
-          power_data.push [row[0], row[6]]
-        end
+      pdata.each do |row|
+        frame_data.push [row[0], row[1]]
+        gt_data.push [row[0], row[2]]
+        rt_data.push [row[0], row[3]]
+        gpu_data.push [row[0], row[4]]
       end
     end
     basename = File.basename(filename, File.extname(filename))
@@ -158,7 +151,7 @@ get "/multi/:multifiles/?" do
       table.css("table")[0]['style'] = 'font-size: 12px;'
       table_data = table.to_s
     end
-    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data, td: temp_data, pd: power_data, ed: events, table: table_data})
+    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data, gpud: gpu_data, ed: events, table: table_data})
   end
   haml :multi
 end
