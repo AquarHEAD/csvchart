@@ -1,11 +1,15 @@
-function app(frame_data, gt_data, rt_data, gpu_data, chart_id, overview_id) {
+function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_data, vram_data, audio_data, chart_id, overview_id) {
   var line_option = {show: true, lineWidth: 0.8};
 
   var dataset = {
-    "frame": {data: frame_data, label: "Frame = 00.00 (ms)", lines: line_option},
-    "gt": {data: gt_data, label: "GT = 00.00 (ms)", lines: line_option},
-    "rt": {data: rt_data, label: "RT = 00.00 (ms)", lines: line_option},
-    "gpu": {data: gpu_data, label: "GPU = 00.00 (ms)", lines: line_option}
+    "frame": {data: frame_data, label: "Frame = 0000.00 (ms)", lines: line_option, yaxis: 1},
+    "gt": {data: gt_data, label: "GT = 0000.00 (ms)", lines: line_option, yaxis: 1},
+    "rt": {data: rt_data, label: "RT = 0000.00 (ms)", lines: line_option, yaxis: 1},
+    "gpu": {data: gpu_data, label: "GPU = 0000.00 (ms)", lines: line_option, yaxis: 1},
+    "actor": {data: actor_data, label: "Actors = 0000", lines: line_option, yaxis: 2},
+    "emitter": {data: emitter_data, label: "Emitters = 000", lines: line_option, yaxis: 3},
+    "vram": {data: vram_data, label: "VRAM = 0000.00 (MB)", lines: line_option, yaxis: 4},
+    "audio": {data: audio_data, label: "Audio = 0000.00 (ms)", lines: line_option, yaxis: 1},
   }
 
   var chart_options = {
@@ -15,9 +19,14 @@ function app(frame_data, gt_data, rt_data, gpu_data, chart_id, overview_id) {
     },
     colors: ["#FE7F2D", "#51A8DD", "#439775", "#CB1B45", "#FEDFE1"],
     yaxis: {
-      min: 0,
-      max: 45,
+      min: 0
     },
+    yaxes: [
+      {max: 45},
+      {max: 4000},
+      {max: 100},
+      {max: 1000}
+    ],
     crosshair: {
       mode: "x",
       color: "#EAE8FF",
@@ -175,9 +184,17 @@ function app(frame_data, gt_data, rt_data, gpu_data, chart_id, overview_id) {
             y = Number(p1[1]);
           }
 
-          var unit = " (ms)";
+          if (i == 4 || i == 5) {
+            legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(0)));
+          }
+          else if (i == 6) {
+            legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + " (MB)"));
+          }
+          else {
+            legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + " (ms)"));
+          }
 
-          legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + unit));
+
         }
       }
 

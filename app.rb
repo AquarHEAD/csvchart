@@ -46,7 +46,7 @@ post "/upload/?" do
       content = params[:htmlfile][:tempfile].read
       f.write(content)
     end
-    redirect "/chart/CL#{params[:changelist]}_#{params[:chartname]}.csv"
+    redirect "/charts/CL#{params[:changelist]}_#{params[:chartname]}.csv"
   end
 end
 
@@ -58,48 +58,6 @@ get "/" do
   haml :files
 end
 
-get "/chart/:filename/?" do
-  @frame_data = []
-  @gt_data = []
-  @rt_data = []
-  @gpu_data = []
-  if File.exist? "uploads/#{params[:filename]}"
-    pfile = File.new("uploads/#{params[:filename]}")
-    plines = pfile.read.lines
-    event_idx = plines.find_index { |x| x.start_with? "Time,Events" }
-    if event_idx
-      pdata = CSV.parse(plines[5..(event_idx-1)].join)
-      event_lines = plines[(event_idx+1)..-1]
-      raw_events = event_lines.map do |el|
-        {time: el.strip.split(",")[0], description: el.strip.split(",")[1].gsub(/"/, "")}
-      end
-      raw_events.sort! { |a,b| a[:time] <=> b[:time] }
-      @events = raw_events.map do |re|
-        "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF', description: '#{re[:description]}'})"
-      end
-    else
-      pdata = CSV.parse(plines[5..-1].join)
-    end
-    pdata.each do |row|
-      @frame_data.push [row[0], row[1]]
-      @gt_data.push [row[0], row[2]]
-      @rt_data.push [row[0], row[3]]
-      @gpu_data.push [row[0], row[4]]
-    end
-  end
-  @filename = File.basename(params[:filename], File.extname(params[:filename]))
-  @table_data = nil
-  if File.exist? "uploads/#{@filename}.html"
-    page = Nokogiri::HTML(open("uploads/#{@filename}.html"))
-    table = page.css("table")[0]
-    table.css("table")[0]['class'] = 'table table-bordered'
-    table.css("table")[0]['style'] = 'font-size: 12px;'
-    @table_data = table.to_s
-  end
-  @title = @filename
-  haml :chart
-end
-
 get "/delete/:filename/?" do
   if File.exist? "uploads/#{params[:filename]}"
     File.delete "uploads/#{params[:filename]}"
@@ -107,41 +65,43 @@ get "/delete/:filename/?" do
   redirect "/"
 end
 
-get "/multi/:multifiles/?" do
-  @title = "Multi Chart"
+get "/charts/:multifiles/?" do
   @files = []
-  params[:multifiles].split(";").each do |filename|
-    frame_data = []
-    gt_data = []
-    rt_data = []
-    gpu_data = []
+  filenames = params[:multifiles].split(";")
+  filenames.each do |filename|
+    this_file = {
+      fd: [], # Frame
+      gd: [], # GT
+      rd: [], # RT
+      gpud: [], # GPU
+      actord: [], # Actor
+      emitterd: [], # Emitter
+      vramd: [], # VRAM
+      audiod: [], # Audio
+    }
 
     events = []
     if File.exist? "uploads/#{filename}"
       pfile = File.new("uploads/#{filename}")
       plines = pfile.read.lines
-      event_idx = plines.find_index { |x| x.start_with? "Time,Events" }
-      if event_idx
-        pdata = CSV.parse(plines[5..(event_idx-1)].join)
-        event_lines = plines[(event_idx+1)..-1]
-        raw_events = event_lines.map do |el|
-          {time: el.strip.split(",")[0], description: el.strip.split(",")[1].gsub(/"/, "")}
-        end
-        raw_events.sort! { |a,b| a[:time] <=> b[:time] }
-        events = raw_events.map do |re|
-          "({ xaxis: {from: #{re[:time]}, to: #{re[:time]} }, lineWidth: 0.5, color: '#FFF', description: '#{re[:description]}'})"
-        end
-      else
-        pdata = CSV.parse(plines[5..-1].join)
-      end
+      pdata = CSV.parse(plines[5..-1].join)
       pdata.each do |row|
-        frame_data.push [row[0], row[1]]
-        gt_data.push [row[0], row[2]]
-        rt_data.push [row[0], row[3]]
-        gpu_data.push [row[0], row[4]]
+        if row.length >= 5
+          this_file[:fd].push [row[0], row[1]]
+          this_file[:gd].push [row[0], row[2]]
+          this_file[:rd].push [row[0], row[3]]
+          this_file[:gpud].push [row[0], row[4]]
+        end
+        if row.length >= 9
+          this_file[:actord].push [row[0], row[5]]
+          this_file[:emitterd].push [row[0], row[6]]
+          this_file[:vramd].push [row[0], row[7]]
+          this_file[:audiod].push [row[0], row[8]]
+        end
       end
     end
     basename = File.basename(filename, File.extname(filename))
+    this_file[:basename] = basename
 
     table_data = nil
     if File.exist? "uploads/#{basename}.html"
@@ -151,9 +111,15 @@ get "/multi/:multifiles/?" do
       table.css("table")[0]['style'] = 'font-size: 12px;'
       table_data = table.to_s
     end
-    @files.push({basename: basename, fd: frame_data, gd: gt_data, rd: rt_data, gpud: gpu_data, ed: events, table: table_data})
+    this_file[:table] = table_data
+    @files.push this_file
   end
-  haml :multi
+  if filenames.length > 1
+    @title = "Multi Chart"
+  else
+    @title = @files[0][:basename]
+  end
+  haml :charts
 end
 
 get '/download/:filename/?' do

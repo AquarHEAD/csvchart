@@ -16,7 +16,7 @@
         - @files.each do |ff|
           %tr
             %td
-              %a.chartlink{href: "/chart/#{ff[:filename]}"}
+              %a.chartlink{href: "/charts/#{ff[:filename]}"}
                 = File.basename(ff[:filename], File.extname(ff[:filename]))
             %td{:'data-order' => "#{ff[:time].to_i}"}
               = ff[:time].iso8601
@@ -65,7 +65,7 @@
 
     $('#showmulti').on('click', function() {
       if (selectedCharts.length > 0) {
-        window.location.href = "/multi/" + selectedCharts.join(";");
+        window.location.href = "/charts/" + selectedCharts.join(";");
       }
     })
 

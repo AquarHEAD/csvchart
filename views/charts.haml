@@ -1,7 +1,7 @@
 .row
   .col-md-8.col-md-offset-2
     %h1
-      Multi Chart
+      Charts
       %small
         %a.btn.btn-info{href: "/"} Back to Index
     %form#choices.form-inline{action: "javascript:void(0);"}
@@ -21,6 +21,22 @@
         %label
           %input{type: "checkbox", name: "gpu", checked: "checked", id: "check_gpu"}
           GPU Thread
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "actor", checked: "checked", id: "check_actor"}
+          Actor Count
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "emitter", checked: "checked", id: "check_emitter"}
+          Emitter Count
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "vram", checked: "checked", id: "check_vram"}
+          VRAM
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "audio", checked: "checked", id: "check_audio"}
+          Audio Thread
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 - @files.each_index do |idx|
   .row
@@ -42,4 +58,8 @@
     var gd = #{@files[idx][:gd]};
     var rd = #{@files[idx][:rd]};
     var gpud = #{@files[idx][:gpud]};
-    app(fd, gd, rd, gpud, "#chart#{idx}", "#overview#{idx}");
+    var actord = #{@files[idx][:actord]};
+    var emitterd = #{@files[idx][:emitterd]};
+    var vramd = #{@files[idx][:vramd]};
+    var audiod = #{@files[idx][:audiod]};
+    make_chart(fd, gd, rd, gpud, actord, emitterd, vramd, audiod, "#chart#{idx}", "#overview#{idx}");
