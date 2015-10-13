@@ -1,4 +1,13 @@
-function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_data, vram_data, audio_data, chart_id, overview_id) {
+function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_data, vram_data, audio_data,
+  chart_id, overview_id,
+  eventslist_id, eventstitle_id, event_markings) {
+
+  // Trick? to allow empty event_markings
+  var ems = [];
+  if (typeof event_markings !== 'undefined') {
+    ems = event_markings.map( function (x) { return eval(x) });
+  }
+
   var line_option = {show: true, lineWidth: 0.8};
 
   var dataset = {
@@ -50,7 +59,7 @@ function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_
           lineWidth: 1,
           color: "#FF0"
         }
-      ]
+      ].concat(ems)
     }
   };
 
@@ -72,9 +81,14 @@ function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_
     yaxis: {
       ticks: [],
       min: 0,
-      max: 45,
       autoscaleMargin: 0.1
     },
+    yaxes: [
+      {max: 45},
+      {max: 4000},
+      {max: 100},
+      {max: 1000}
+    ],
     selection: {
       mode: "x"
     },
@@ -159,6 +173,17 @@ function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_
           pos.y < axes.yaxis.min || pos.y > axes.yaxis.max) {
           return ;
         }
+
+        // Add events +-5px around mouse position
+        $(eventslist_id).empty();
+        ems.filter(function(em) {
+          return (em.xaxis.from <= axes.xaxis.max) && (Math.abs(pos.x - em.xaxis.from) / axes.xaxis.max * $(chart_id).width() <= 5);
+        }).forEach(function(em) {
+          $(eventslist_id).append('<p>' + em.xaxis.from + ': ' + em.description + '</p>');
+        });
+
+        // Add mouse position to events title
+        $(eventstitle_id).text("Events around " + pos.x.toFixed(2));
 
         // Update values at mouse position
         var i, j, dataset = plot.getData();

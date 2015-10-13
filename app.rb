@@ -78,26 +78,32 @@ get "/charts/:multifiles/?" do
       emitterd: [], # Emitter
       vramd: [], # VRAM
       audiod: [], # Audio
+      events: [], # Events
     }
 
     events = []
     if File.exist? "uploads/#{filename}"
       pfile = File.new("uploads/#{filename}")
       plines = pfile.read.lines
-      pdata = CSV.parse(plines[5..-1].join)
+      event_idx = plines.find_index { |x| x.start_with? "Time,Events" }
+      if event_idx
+        pdata = CSV.parse(plines[5..(event_idx-1)].join)
+        edata = CSV.parse(plines[(event_idx+1)..-1].join)
+        this_file[:events] = edata.map do |ed|
+          "({ xaxis: {from: #{ed[0]}, to: #{ed[0]} }, lineWidth: 0.5, color: '#FFF', description: '#{ed[1]}'})"
+        end
+      else
+        pdata = CSV.parse(plines[5..-1].join)
+      end
       pdata.each do |row|
-        if row.length >= 5
-          this_file[:fd].push [row[0], row[1]]
-          this_file[:gd].push [row[0], row[2]]
-          this_file[:rd].push [row[0], row[3]]
-          this_file[:gpud].push [row[0], row[4]]
-        end
-        if row.length >= 9
-          this_file[:actord].push [row[0], row[5]]
-          this_file[:emitterd].push [row[0], row[6]]
-          this_file[:vramd].push [row[0], row[7]]
-          this_file[:audiod].push [row[0], row[8]]
-        end
+        this_file[:fd].push [row[0], row[1]] if row.length >= 2
+        this_file[:gd].push [row[0], row[2]] if row.length >= 3
+        this_file[:rd].push [row[0], row[3]] if row.length >= 4
+        this_file[:gpud].push [row[0], row[4]] if row.length >= 5
+        this_file[:actord].push [row[0], row[5]] if row.length >= 6
+        this_file[:emitterd].push [row[0], row[6]] if row.length >= 7
+        this_file[:vramd].push [row[0], row[7]] if row.length >= 8
+        this_file[:audiod].push [row[0], row[8]] if row.length >= 9
       end
     end
     basename = File.basename(filename, File.extname(filename))
