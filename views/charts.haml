@@ -37,6 +37,18 @@
         %label
           %input{type: "checkbox", name: "audio", checked: "checked", id: "check_audio"}
           Audio Thread
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "inrate", checked: "checked", id: "check_inrate"}
+          InRate
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "outrate", checked: "checked", id: "check_outrate"}
+          OutRate
+      .checkbox
+        %label
+          %input{type: "checkbox", name: "ping", checked: "checked", id: "check_ping"}
+          Ping
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 - @files.each_index do |idx|
   .row
@@ -65,5 +77,8 @@
     var emitterd = #{@files[idx][:emitterd]};
     var vramd = #{@files[idx][:vramd]};
     var audiod = #{@files[idx][:audiod]};
+    var inrated = #{@files[idx][:inrd]};
+    var outrated = #{@files[idx][:outrd]};
+    var pingd = #{@files[idx][:pingd]};
     var events = #{@files[idx][:events]};
-    make_chart(fd, gd, rd, gpud, actord, emitterd, vramd, audiod, "#chart#{idx}", "#overview#{idx}", "#eventslist#{idx}", "#eventstitle#{idx}", events);
+    make_chart(fd, gd, rd, gpud, actord, emitterd, vramd, audiod, inrated, outrated, pingd, "#chart#{idx}", "#overview#{idx}", "#eventslist#{idx}", "#eventstitle#{idx}", events);

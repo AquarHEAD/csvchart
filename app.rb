@@ -68,18 +68,23 @@ end
 get "/charts/:multifiles/?" do
   @files = []
   filenames = params[:multifiles].split(";")
+  keys = [:fd, # Frame
+      :gd, # GT
+      :rd, # RT
+      :gpud, # GPU
+      :actord, # Actor
+      :emitterd, # Emitter
+      :vramd, # VRAM
+      :audiod, # Audio
+      :inrd, # InRate
+      :outrd, # OutRate
+      :pingd, # Ping
+    ]
   filenames.each do |filename|
     this_file = {
-      fd: [], # Frame
-      gd: [], # GT
-      rd: [], # RT
-      gpud: [], # GPU
-      actord: [], # Actor
-      emitterd: [], # Emitter
-      vramd: [], # VRAM
-      audiod: [], # Audio
       events: [], # Events
     }
+    keys.each { |k| this_file[k] = [] }
 
     events = []
     if File.exist? "uploads/#{filename}"
@@ -96,14 +101,9 @@ get "/charts/:multifiles/?" do
         pdata = CSV.parse(plines[5..-1].join)
       end
       pdata.each do |row|
-        this_file[:fd].push [row[0], row[1]] if row.length >= 2
-        this_file[:gd].push [row[0], row[2]] if row.length >= 3
-        this_file[:rd].push [row[0], row[3]] if row.length >= 4
-        this_file[:gpud].push [row[0], row[4]] if row.length >= 5
-        this_file[:actord].push [row[0], row[5]] if row.length >= 6
-        this_file[:emitterd].push [row[0], row[6]] if row.length >= 7
-        this_file[:vramd].push [row[0], row[7]] if row.length >= 8
-        this_file[:audiod].push [row[0], row[8]] if row.length >= 9
+        keys.each_with_index do |key, idx|
+          this_file[key].push [row[0], row[idx+1]] if row.length >= idx+2
+        end
       end
     end
     basename = File.basename(filename, File.extname(filename))

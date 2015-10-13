@@ -1,4 +1,6 @@
-function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_data, vram_data, audio_data,
+function make_chart(frame_data, gt_data, rt_data, gpu_data,
+  actor_data, emitter_data, vram_data, audio_data,
+  inrate_data, outrate_data, ping_data,
   chart_id, overview_id,
   eventslist_id, eventstitle_id, event_markings) {
 
@@ -19,6 +21,9 @@ function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_
     "emitter": {data: emitter_data, label: "Emitters = 000", lines: line_option, yaxis: 3},
     "vram": {data: vram_data, label: "VRAM = 0000.00 (MB)", lines: line_option, yaxis: 4},
     "audio": {data: audio_data, label: "Audio = 0000.00 (ms)", lines: line_option, yaxis: 1},
+    "inrate": {data: inrate_data, label: "InRate = 0000 (Bps)", lines: line_option, yaxis: 2},
+    "outrate": {data: outrate_data, label: "OutRate = 0000 (Bps)", lines: line_option, yaxis: 2},
+    "ping": {data: ping_data, label: "Ping = 000 (ms)", lines: line_option, yaxis: 3},
   }
 
   var chart_options = {
@@ -214,6 +219,12 @@ function make_chart(frame_data, gt_data, rt_data, gpu_data, actor_data, emitter_
           }
           else if (i == 6) {
             legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + " (MB)"));
+          }
+          else if (i == 8 || i == 9) {
+            legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(0) + " (Bps)"));
+          }
+          else if (i == 10) {
+            legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(0) + " (ms)"));
           }
           else {
             legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + " (ms)"));
