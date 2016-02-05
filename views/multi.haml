@@ -17,14 +17,6 @@
         %label
           %input{type: "checkbox", name: "rt", checked: "checked", id: "check_rt"}
           Render Thread
-      .checkbox
-        %label
-          %input{type: "checkbox", name: "temp", checked: "checked", id: "check_temp"}
-          Temperature
-      .checkbox
-        %label
-          %input{type: "checkbox", name: "power", checked: "checked", id: "check_power"}
-          Power Level
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 - @files.each_index do |idx|
   .row
@@ -46,4 +38,4 @@
         != @files[idx][:table]
   :javascript
     var fd = #{@files[idx][:fd]};
-    app(fd, #{@files[idx][:gd]}, #{@files[idx][:rd]}, #{@files[idx][:td]}, #{@files[idx][:pd]}, "#chart#{idx}", "#overview#{idx}", "#eventslist#{idx}", "#eventstitle#{idx}", #{@files[idx][:ed]});
+    app(fd, #{@files[idx][:gd]}, #{@files[idx][:rd]}, "#chart#{idx}", "#overview#{idx}", "#eventslist#{idx}", "#eventstitle#{idx}", #{@files[idx][:ed]});

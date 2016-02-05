@@ -62,8 +62,6 @@ get "/chart/:filename/?" do
   @frame_data = []
   @gt_data = []
   @rt_data = []
-  @temp_data = []
-  @power_data = []
   @events = []
   if File.exist? "uploads/#{params[:filename]}"
     pfile = File.new("uploads/#{params[:filename]}")
@@ -82,20 +80,10 @@ get "/chart/:filename/?" do
     else
       pdata = CSV.parse(plines[5..-1].join)
     end
-    if pdata[0].length == 5
-      pdata.each do |row|
-        @frame_data.push [row[0], row[1]]
-        @gt_data.push [row[0], row[2]]
-        @rt_data.push [row[0], row[3]]
-      end
-    elsif pdata[0].length == 7
-      pdata.each do |row|
-        @frame_data.push [row[0], row[1]]
-        @gt_data.push [row[0], row[2]]
-        @rt_data.push [row[0], row[3]]
-        @temp_data.push [row[0], row[5]]
-        @power_data.push [row[0], row[6]]
-      end
+    pdata.each do |row|
+      @frame_data.push [row[0], row[1]]
+      @gt_data.push [row[0], row[2]]
+      @rt_data.push [row[0], row[3]]
     end
   end
   @filename = File.basename(params[:filename], File.extname(params[:filename]))
@@ -145,20 +133,10 @@ get "/multi/:multifiles/?" do
       else
         pdata = CSV.parse(plines[5..-1].join)
       end
-      if pdata[0].length == 5
-        pdata.each do |row|
-          frame_data.push [row[0], row[1]]
-          gt_data.push [row[0], row[2]]
-          rt_data.push [row[0], row[3]]
-        end
-      elsif pdata[0].length == 7
-        pdata.each do |row|
-          frame_data.push [row[0], row[1]]
-          gt_data.push [row[0], row[2]]
-          rt_data.push [row[0], row[3]]
-          temp_data.push [row[0], row[5]]
-          power_data.push [row[0], row[6]]
-        end
+      pdata.each do |row|
+        frame_data.push [row[0], row[1]]
+        gt_data.push [row[0], row[2]]
+        rt_data.push [row[0], row[3]]
       end
     end
     basename = File.basename(filename, File.extname(filename))

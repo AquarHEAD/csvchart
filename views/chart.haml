@@ -17,14 +17,6 @@
         %label
           %input{type: "checkbox", name: "rt", checked: "checked", id: "check_rt"}
           Render Thread
-      .checkbox
-        %label
-          %input{type: "checkbox", name: "temp", checked: "checked", id: "check_temp"}
-          Temperature
-      .checkbox
-        %label
-          %input{type: "checkbox", name: "power", checked: "checked", id: "check_power"}
-          Power Level
       %button.btn.btn-default{type: "submit", id: "replot"} Replot
 .row
   .col-md-10
@@ -42,4 +34,4 @@
 :javascript
   var fd = #{@frame_data};
   var gd = #{@gt_data};
-  app(fd, gd, #{@rt_data}, #{@temp_data}, #{@power_data}, "#chart", "#overview", "#eventslist", "#eventstitle", #{@events});
+  app(fd, gd, #{@rt_data}, "#chart", "#overview", "#eventslist", "#eventstitle", #{@events});

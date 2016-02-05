@@ -1,4 +1,4 @@
-function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, overview_id, eventslist_id, eventstitle_id, event_markings) {
+function app(frame_data, gt_data, rt_data, chart_id, overview_id, eventslist_id, eventstitle_id, event_markings) {
   // Trick? to allow empty event_markings
   var ems = [];
   if (typeof event_markings !== 'undefined') {
@@ -11,10 +11,6 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
     "frame": {data: frame_data, label: "Frame = 00.00 (ms)", lines: line_option},
     "gt": {data: gt_data, label: "GT = 00.00 (ms)", lines: line_option},
     "rt": {data: rt_data, label: "RT = 00.00 (ms)", lines: line_option}
-  }
-  if (temp_data.length > 0) {
-    dataset["temp"] = {data: temp_data, label: "Temp = 00.00 (°C)", lines: line_option};
-    dataset["power"] = {data: power_data, label: "PL = 0", lines: line_option};
   }
 
   var chart_options = {
@@ -41,9 +37,14 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
       aboveData: false,
       markings: [
         {
-          yaxis: {from: 1000/60, to: 1000/60},
+          yaxis: {from: 1000/90, to: 1000/90},
           lineWidth: 1,
           color: "#0F0"
+        },
+        {
+          yaxis: {from: 1000/60, to: 1000/60},
+          lineWidth: 1,
+          color: "#FF0"
         },
         {
           yaxis: {from: 1000/30, to:1000/30},
@@ -100,8 +101,11 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
       var plot = $.plot(chart_id, data, chart_options);
 
       function add_fps_label() {
+        var pos90 = plot.pointOffset({ x: 0.5, y: 1000/90});
+        chart.append('<div style="position:absolute;left:' + (pos90.left + 4) + 'px;top:' + (pos90.top-15) + 'px;color:#0F0;font-size:smaller">90 FPS</div>');
+
         var pos60 = plot.pointOffset({ x: 0.5, y: 1000/60});
-        chart.append('<div style="position:absolute;left:' + (pos60.left + 4) + 'px;top:' + (pos60.top-15) + 'px;color:#0F0;font-size:smaller">60 FPS</div>');
+        chart.append('<div style="position:absolute;left:' + (pos60.left + 4) + 'px;top:' + (pos60.top-15) + 'px;color:#FF0;font-size:smaller">60 FPS</div>');
 
         var pos30 = plot.pointOffset({ x: 0.5, y: 1000/30});
         chart.append('<div style="position:absolute;left:' + (pos30.left + 4) + 'px;top:' + (pos30.top-15) + 'px;color:#FF0;font-size:smaller">30 FPS</div>');
@@ -196,12 +200,6 @@ function app(frame_data, gt_data, rt_data, temp_data, power_data, chart_id, over
           }
 
           var unit = " (ms)";
-          if (i == 3) {
-            unit = " (°C)";
-          }
-          if (i == 4) {
-            unit = "";
-          }
 
           legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2) + unit));
         }
